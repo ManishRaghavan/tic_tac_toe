@@ -1,22 +1,23 @@
 import React from 'react'
 import styles from "./main.module.css"
 import style from "./box.module.css"
+import Minimax from 'tic-tac-toe-minimax'
 
 
 
 export const Main = () => {
 
-    const[player,Setpalyer] = React.useState("")
-    const[value,Setvalue] = React.useState("")
-    const[hard,Sethard] = React.useState("")
-    const[playerValue,SetPlayerValue] = React.useState("")
+    const[player,Setplayer] = React.useState("player")
+    const[value,Setvalue] = React.useState("X")
+    const[hard,Sethard] = React.useState("Easy")
+    const[playerValue,SetPlayerValue] = React.useState("X")
 
     const hanldeSet=(value)=>{
         if(value==="player"){
-            Setpalyer("player")
+            Setplayer(("player"))
         }
         if(value==="ai"){
-            Setpalyer("ai")
+            Setplayer(("ai"))
         }if(value==="x"){
             Setvalue("X")
             SetPlayerValue("X")
@@ -34,26 +35,90 @@ export const Main = () => {
     }
     
 
-    const huPlayer = value;
-    const aiPlayer = value==="X"?"X":"O";
-
-    const symbols = {
-    huPlayer: huPlayer,
-    aiPlayer: aiPlayer
-    }
-
-
-    const board = [0,1,2,3,4,5,6,7,8]
 
     
+    const[winner,SetWinner] = React.useState("")
 
     const [pBoard,SetPboard] = React.useState({0:"?",1:"?",2:"?",3:"?",4:"?",5:"?",6:"?",7:"?",8:"?"})
+
+    const winnerCheck=()=>{
+        let b = pBoard
+        let arr=[b[0],b[1],b[2],b[3],b[4],b[5],b[6],b[7],b[8]]
+        if(arr[0]===arr[1]&&arr[1]===arr[2] && arr[0]!=="?"){
+            return SetWinner(arr[0])
+        } if(arr[3]===arr[4]&&arr[4]===arr[5] && arr[3]!=="?"){
+            return SetWinner(arr[3])
+        } if(arr[6]===arr[7]&&arr[7]===arr[8] && arr[8]!=="?"){
+            return SetWinner(arr[6])
+        } if(arr[0]===arr[4]&&arr[4]===arr[8] && arr[8]!=="?"){
+            return SetWinner(arr[0])
+        } if(arr[2]===arr[4]&&arr[4]===arr[6] && arr[6]!=="?"){
+            return  SetWinner(arr[2])
+        } if(arr[0]===arr[3]&&arr[3]===arr[6] && arr[6]!=="?"){
+            return SetWinner(arr[0])
+        }if(arr[1]===arr[4]&&arr[4]===arr[7] && arr[7]!=="?"){
+            return SetWinner(arr[1])
+        }if(arr[2]===arr[5]&&arr[5]===arr[8] && arr[8]!=="?"){
+            return SetWinner(arr[2])
+        }
+
+    }
+
+    const { ComputerMove } = Minimax;
+ 
+
+    const[prev,Setprev] = React.useState([0,1,2,3,4,5,6,7,8])
+    
+   
+
+
     const game=(number)=>{
         if(player==="player"){
             if(pBoard[number]!=="?") return
             SetPboard({...pBoard,[number]:playerValue})
             SetPlayerValue(playerValue==="X"?"O":"X")
+            
+        }if(player==="ai"){
+            if(pBoard[number]!=="?"){return}
+            SetPboard({...pBoard,[number]:value})
+            return ai(number)
+    }
+}
+
+const ai =(number)=>{
+    const huPlayer = value;
+        const aiPlayer = value==="X"?"O":"X";
+        const symbols = {
+            huPlayer: huPlayer,
+            aiPlayer: aiPlayer
         }
+        
+        const board = prev;
+        board[number] = huPlayer
+        let nextMove = ComputerMove( board, symbols, hard );
+        board[nextMove] = aiPlayer
+        let s = setTimeout(() => {
+            SetPboard(prevState=>{return{...prevState,[nextMove]:aiPlayer}})
+        }, 1000);
+  
+        Setprev(board)
+        return s
+}
+
+    React.useEffect(()=>{
+        SetPboard(pBoard)
+        return winnerCheck()
+    },[pBoard])
+
+    const hanldeReset=()=>{
+        let dummy = {0:"?",1:"?",2:"?",3:"?",4:"?",5:"?",6:"?",7:"?",8:"?"}
+        SetPboard(dummy)
+        Setvalue("")
+        SetPlayerValue("")
+        Setplayer("")
+        Sethard("")
+        SetWinner("")
+        Setprev([0,1,2,3,4,5,6,7,8])
     }
 
   
@@ -97,6 +162,12 @@ export const Main = () => {
                 <div onClick={()=>game(7)}><h1>{pBoard[7]}</h1></div>
                 <div onClick={()=>game(8)}><h1>{pBoard[8]}</h1></div>
           
+            </div>
+            <div onClick={hanldeReset} className={styles.ResetBtn}>
+            <h3>Reset</h3>
+            </div>
+            <div id={winner!==""?styles.gameWinner:null} className={styles.gameWinner}>
+                <h1>✌️ {winner==="X"?"X":"O"} won ✌️ </h1>
             </div>
         </div>
     )
