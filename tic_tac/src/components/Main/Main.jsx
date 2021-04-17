@@ -62,6 +62,17 @@ export const Main = () => {
             return SetWinner(arr[2])
         }
 
+        let count = 0
+        for(let i=0;i<arr.length;i++){
+            if(arr[i]==="?"){
+                count++
+            }
+        }
+
+        if(count===0){
+            SetWinner("Draw")
+        }
+
     }
 
     const { ComputerMove } = Minimax;
@@ -73,12 +84,15 @@ export const Main = () => {
 
 
     const game=(number)=>{
+        if(winner!=="") return
         if(player==="player"){
             if(pBoard[number]!=="?") return
             SetPboard({...pBoard,[number]:playerValue})
             SetPlayerValue(playerValue==="X"?"O":"X")
             
         }if(player==="ai"){
+            
+            if(winner!=="") return
             if(pBoard[number]!=="?"){return}
             SetPboard({...pBoard,[number]:value})
             return ai(number)
@@ -86,6 +100,7 @@ export const Main = () => {
 }
 
 const ai =(number)=>{
+    winnerCheck()
     const huPlayer = value;
         const aiPlayer = value==="X"?"O":"X";
         const symbols = {
@@ -106,6 +121,7 @@ const ai =(number)=>{
 }
 
     React.useEffect(()=>{
+        if(winner!=="") return
         SetPboard(pBoard)
         return winnerCheck()
     },[pBoard])
@@ -113,10 +129,10 @@ const ai =(number)=>{
     const hanldeReset=()=>{
         let dummy = {0:"?",1:"?",2:"?",3:"?",4:"?",5:"?",6:"?",7:"?",8:"?"}
         SetPboard(dummy)
-        Setvalue("")
-        SetPlayerValue("")
-        Setplayer("")
-        Sethard("")
+        Setvalue("X")
+        SetPlayerValue("X")
+        Setplayer("player")
+        Sethard("Easy")
         SetWinner("")
         Setprev([0,1,2,3,4,5,6,7,8])
     }
@@ -141,7 +157,7 @@ const ai =(number)=>{
                 </div>
                 </div>
             </div>
-            <div className={styles.S_hard} >
+            <div className={styles.S_hard} id={player==="ai"?null:styles.s_hard} >
                 <div id={hard==="Easy"?styles.S_hard:null} onClick={()=>hanldeSet("Easy")}>
                     <h4>Easy</h4>
                 </div>
@@ -167,7 +183,7 @@ const ai =(number)=>{
             <h3>Reset</h3>
             </div>
             <div id={winner!==""?styles.gameWinner:null} className={styles.gameWinner}>
-                <h1>✌️ {winner==="X"?"X":"O"} won ✌️ </h1>
+                <h1> {winner==="X"?"✌️ X won ✌️":winner==="O"?"✌️ O won ✌️":winner==="Draw"?"💪 Draw 💪":null}  </h1>
             </div>
         </div>
     )
