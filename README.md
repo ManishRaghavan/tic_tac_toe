@@ -16,4 +16,4 @@ Every board state has a value associated with it. In a given state if the maximi
 
 ## Images
 
-![Game display]()
+![image](https://raw.githubusercontent.com/ManishRaghavan/tic_tac_toe/main/tic%20tac%20game.png)
