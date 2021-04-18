@@ -1,5 +1,6 @@
 # tic_tac_toe
  A simple tic tac toe game with the option to play in multiplayer and with Ai
+ [Link for the Game](https://manish-tic-tac-toe.netlify.app/)
  
  ## Tech Stack used
  1. React          
